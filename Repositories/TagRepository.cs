@@ -5,15 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookmarkManager.Repositories;
 
-public class TagRepository: ITagRepository
+public class TagRepository(AppDbContext context) : ITagRepository
 {
     // Implement methods for tag management (e.g., GetTags, AddTag, UpdateTag, DeleteTag)
     // inject the AppDbContext here for database operations
-    private readonly AppDbContext _context;
-    public TagRepository(AppDbContext context)
-    {
-        _context = context;
-    }
+    private readonly AppDbContext _context = context;
 
     // Example method to get all tags
     public async Task<IEnumerable<Tag>> GetTagsAsync(

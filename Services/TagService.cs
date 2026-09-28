@@ -5,14 +5,9 @@ using BookmarkManager.Models.Mapper;
 
 namespace BookmarkManager.Servicess;
 
-public class TagService : ITagService
+public class TagService(ITagRepository tagRepository) : ITagService
 {
-    private readonly ITagRepository _tagRepository;
-
-    public TagService(ITagRepository tagRepository)
-    {
-        _tagRepository = tagRepository;
-    }
+    private readonly ITagRepository _tagRepository = tagRepository;
 
     public async Task<ServiceResult<IEnumerable<TagResponseDto>>> GetTagsAsync(
         CancellationToken cancellationToken)

@@ -5,14 +5,10 @@ namespace BookmarkManager.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class TagsController : BaseApiController
+public class TagsController(ITagService tagService) : BaseApiController
 {
     // inject service here for tag management (e.g., ITagService)
-    private readonly ITagService _tagService;
-    public TagsController(ITagService tagService)
-    {
-        _tagService = tagService;
-    }
+    private readonly ITagService _tagService = tagService;
 
     // GET: api/Tags
     [HttpGet]
