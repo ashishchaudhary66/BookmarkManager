@@ -15,6 +15,11 @@
 
   <ItemGroup>
     <Folder Include="Common\Constants\" />
+    <Folder Include="tests\BookmarkManager.Tests\Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="tests\BookmarkManager.Tests\BookmarkManager.Tests.csproj" />
   </ItemGroup>
 
 </Project>
