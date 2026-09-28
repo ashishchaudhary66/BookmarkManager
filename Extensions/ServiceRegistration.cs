@@ -1,6 +1,6 @@
 ﻿using BookmarkManager.Interfaces;
 using BookmarkManager.Repositories;
-using BookmarkManager.Servicess;
+using BookmarkManager.Services;
 
 namespace BookmarkManager.Extensions;
 

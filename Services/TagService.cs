@@ -3,7 +3,7 @@ using BookmarkManager.Models;
 using BookmarkManager.Models.Dtos;
 using BookmarkManager.Models.Mapper;
 
-namespace BookmarkManager.Servicess;
+namespace BookmarkManager.Services;
 
 public class TagService(ITagRepository tagRepository) : ITagService
 {
