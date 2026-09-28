@@ -1,12 +1,14 @@
 ﻿namespace BookmarkManager.Models.Entities
 {
-    public class Tag
+    public class Bookmark
     {
         public int Id { get; set; }
 
-        public string Name { get; set; } = string.Empty;
+        public string? Title { get; set; }
 
-        public string ColorCode { get; set; } = string.Empty;
+        public string Url { get; set; } = string.Empty;
+
+        public string NormalizedUrl { get; set; } = string.Empty;
 
         public DateTime CreatedAt { get; set; }
 

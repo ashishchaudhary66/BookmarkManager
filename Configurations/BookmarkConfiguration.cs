@@ -4,25 +4,29 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BookmarkManager.Configurations
 {
-    public class TagConfiguration : IEntityTypeConfiguration<Tag>
+    public class BookmarkConfiguration : IEntityTypeConfiguration<Bookmark>
     {
-        public void Configure(EntityTypeBuilder<Tag> builder)
+        public void Configure(EntityTypeBuilder<Bookmark> builder)
         {
-            builder.ToTable("tags");
+            builder.ToTable("bookmarks");
 
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id)
                 .HasColumnName("id");
 
-            builder.Property(x => x.Name)
-                .HasColumnName("name")
-                .HasMaxLength(100)
+            builder.Property(x => x.Title)
+                .HasColumnName("title")
+                .HasMaxLength(500);
+
+            builder.Property(x => x.Url)
+                .HasColumnName("url")
+                .HasMaxLength(2048)
                 .IsRequired();
 
-            builder.Property(x => x.ColorCode)
-                .HasColumnName("color_code")
-                .HasMaxLength(50)
+            builder.Property(x => x.NormalizedUrl)
+                .HasColumnName("normalized_url")
+                .HasMaxLength(2048)
                 .IsRequired();
 
             builder.Property(x => x.CreatedAt)
@@ -40,10 +44,10 @@ namespace BookmarkManager.Configurations
                 .HasDefaultValue(false)
                 .IsRequired();
 
-            // Tag names must be unique only for active tags.
-            builder.HasIndex(x => x.Name)
+            // Only active bookmarks must have unique normalized URLs.
+            builder.HasIndex(x => x.NormalizedUrl)
                 .IsUnique()
-                .HasDatabaseName("UX_Tags_Name_Active")
+                .HasDatabaseName("UX_bookmarks_normalized_url_active")
                 .HasFilter("is_deleted = 0");
 
             builder.HasQueryFilter(x => !x.IsDeleted);

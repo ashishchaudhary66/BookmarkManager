@@ -10,7 +10,11 @@ namespace BookmarkManager.Data
         {
         }
 
-        public DbSet<Tag> Tags { get; set; }
+        public DbSet<Bookmark> Bookmarks => Set<Bookmark>();
+
+        public DbSet<Tag> Tags => Set<Tag>();
+
+        public DbSet<BookmarkTag> BookmarkTags => Set<BookmarkTag>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
