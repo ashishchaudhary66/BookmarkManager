@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <Folder Include="Common\Constants\" />
-    <Folder Include="Middleware\" />
   </ItemGroup>
 
 </Project>
