@@ -9,6 +9,11 @@ public class TagService(ITagRepository tagRepository) : ITagService
 {
     private readonly ITagRepository _tagRepository = tagRepository;
 
+    /// <summary>
+    ///  Get all tags
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     public async Task<ServiceResult<IEnumerable<TagResponseDto>>> GetTagsAsync(
         CancellationToken cancellationToken)
     {
