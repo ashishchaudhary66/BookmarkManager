@@ -1,19 +1,18 @@
 ﻿using BookmarkManager.Interfaces;
 using BookmarkManager.Repositories;
-using BookmarkManager.Services;
+using BookmarkManager.Servicess;
 
-namespace BookmarkManager.Extensions
+namespace BookmarkManager.Extensions;
+
+public static class ServiceRegistration
 {
-    public static class ServiceRegistration
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
-        {
-            // Register application services here
-            services.AddScoped<ITagService, TagService>();
-            services.AddScoped<ITagRepository, TagRepository>();
+        // Register application services here
+        services.AddScoped<ITagService, TagService>();
+        services.AddScoped<ITagRepository, TagRepository>();
 
 
-            return services;
-        }
+        return services;
     }
 }

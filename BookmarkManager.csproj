@@ -16,7 +16,6 @@
   <ItemGroup>
     <Folder Include="Common\Constants\" />
     <Folder Include="Middleware\" />
-    <Folder Include="Models\Dtos\" />
   </ItemGroup>
 
 </Project>

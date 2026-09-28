@@ -1,21 +1,20 @@
-﻿namespace BookmarkManager.Models.Entities
+﻿namespace BookmarkManager.Models.Entities;
+
+public class BookmarkTag
 {
-    public class BookmarkTag
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        public int BookmarkId { get; set; }
+    public int BookmarkId { get; set; }
 
-        public int TagId { get; set; }
+    public int TagId { get; set; }
 
-        public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
 
-        public DateTime UpdatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
 
-        public bool IsDeleted { get; set; }
+    public bool IsDeleted { get; set; }
 
-        public Bookmark Bookmark { get; set; } = null!;
+    public Bookmark Bookmark { get; set; } = null!;
 
-        public Tag Tag { get; set; } = null!;
-    }
+    public Tag Tag { get; set; } = null!;
 }

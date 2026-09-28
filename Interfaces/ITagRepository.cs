@@ -1,6 +1,8 @@
-﻿namespace BookmarkManager.Interfaces
+﻿using BookmarkManager.Models.Entities;
+
+namespace BookmarkManager.Interfaces;
+
+public interface ITagRepository
 {
-    public interface ITagRepository
-    {
-    }
+    Task<IEnumerable<Tag>> GetTagsAsync(CancellationToken cancellationToken);
 }

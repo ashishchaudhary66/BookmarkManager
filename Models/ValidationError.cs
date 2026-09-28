@@ -1,4 +1,3 @@
-namespace BookmarkManager.Models
-{
-    public record ValidationError(string Field, string Message);
-}
+namespace BookmarkManager.Models;
+
+public record ValidationError(string Field, string Message);

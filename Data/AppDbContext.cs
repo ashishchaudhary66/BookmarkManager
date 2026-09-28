@@ -1,26 +1,25 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using BookmarkManager.Models.Entities;
 
-namespace BookmarkManager.Data
+namespace BookmarkManager.Data;
+
+public class AppDbContext : DbContext
 {
-    public class AppDbContext : DbContext
+    public AppDbContext(DbContextOptions<AppDbContext> options)
+        : base(options)
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options)
-            : base(options)
-        {
-        }
+    }
 
-        public DbSet<Bookmark> Bookmarks => Set<Bookmark>();
+    public DbSet<Bookmark> Bookmarks => Set<Bookmark>();
 
-        public DbSet<Tag> Tags => Set<Tag>();
+    public DbSet<Tag> Tags => Set<Tag>();
 
-        public DbSet<BookmarkTag> BookmarkTags => Set<BookmarkTag>();
+    public DbSet<BookmarkTag> BookmarkTags => Set<BookmarkTag>();
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
 
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
-        }
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
     }
 }
