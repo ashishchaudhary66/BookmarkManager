@@ -7,10 +7,13 @@ namespace BookmarkManager.Controllers;
 [ApiController]
 public class TagsController(ITagService tagService) : BaseApiController
 {
-    // inject service here for tag management (e.g., ITagService)
     private readonly ITagService _tagService = tagService;
 
-    // GET: api/Tags
+    /// <summary>
+    /// Get all tags
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     [HttpGet]
     public async Task<IActionResult> GetTags(CancellationToken cancellationToken)
     {
