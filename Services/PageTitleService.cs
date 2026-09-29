@@ -76,17 +76,8 @@ public class PageTitleService(
         {
             throw;
         }
-        catch (HttpRequestException)
-        {
-            return null;
-        }
-        catch (TaskCanceledException)
-        {
-            return null;
-        }
         catch
         {
-            // Title retrieval is best-effort.
             return null;
         }
     }
