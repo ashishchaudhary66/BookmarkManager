@@ -10,6 +10,10 @@ namespace BookmarkManager.Interfaces
             BookmarkQuery query,
             CancellationToken cancellationToken = default);
 
+        Task<Bookmark?> GetByIdReadOnlyAsync(
+            int id,
+            CancellationToken cancellationToken = default);
+
         Task<Bookmark?> GetByIdAsync(
             int id,
             CancellationToken cancellationToken = default);

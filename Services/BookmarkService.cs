@@ -43,7 +43,7 @@ namespace BookmarkManager.Services
             int id,
             CancellationToken cancellationToken = default)
         {
-            var bookmark = await _bookmarkRepository.GetByIdAsync(
+            var bookmark = await _bookmarkRepository.GetByIdReadOnlyAsync(
                 id,
                 cancellationToken);
 
@@ -150,7 +150,7 @@ namespace BookmarkManager.Services
                 cancellationToken);
 
             // Reload bookmark with Tag relationships
-            var createdBookmark = await _bookmarkRepository.GetByIdAsync(
+            var createdBookmark = await _bookmarkRepository.GetByIdReadOnlyAsync(
                 bookmark.Id,
                 cancellationToken);
 
@@ -300,7 +300,7 @@ namespace BookmarkManager.Services
                 cancellationToken);
 
             // 10. Reload to get complete Tag navigation objects
-            var updatedBookmark = await _bookmarkRepository.GetByIdAsync(
+            var updatedBookmark = await _bookmarkRepository.GetByIdReadOnlyAsync(
                 id,
                 cancellationToken);
 

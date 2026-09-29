@@ -61,6 +61,20 @@ public class BookmarkRepository(AppDbContext dbContext)
             cancellationToken);
     }
 
+    public async Task<Bookmark?> GetByIdReadOnlyAsync(
+    int id,
+    CancellationToken cancellationToken = default)
+    {
+        return await _context.Bookmarks
+            .AsNoTracking()
+            .Include(b => b.BookmarkTags
+                .Where(bt => !bt.IsDeleted && !bt.Tag.IsDeleted))
+            .ThenInclude(bt => bt.Tag)
+            .FirstOrDefaultAsync(
+                b => b.Id == id && !b.IsDeleted,
+                cancellationToken);
+    }
+
     public async Task<Bookmark?> GetByIdAsync(
     int id,
     CancellationToken cancellationToken = default)
