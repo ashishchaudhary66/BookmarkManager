@@ -169,6 +169,7 @@ namespace BookmarkManager.Services
             BookmarkUpdateDto request,
             CancellationToken cancellationToken = default)
         {
+            // 1. Get tracked bookmark
             var bookmark = await _bookmarkRepository.GetByIdAsync(
                 id,
                 cancellationToken);
@@ -179,7 +180,7 @@ namespace BookmarkManager.Services
                     "Bookmark not found.");
             }
 
-            // Validate URL
+            // 2. Validate URL
             if (!Uri.TryCreate(
                     request.Url?.Trim(),
                     UriKind.Absolute,
@@ -192,14 +193,16 @@ namespace BookmarkManager.Services
                     "Please provide a valid HTTP or HTTPS URL.");
             }
 
+            // 3. Normalize URL
             var normalizedUrl = uri.AbsoluteUri
                 .TrimEnd('/')
                 .ToLowerInvariant();
 
-            // Duplicate check
-            var existing = await _bookmarkRepository.GetByNormalizedUrlAsync(
-                normalizedUrl,
-                cancellationToken);
+            // 4. Duplicate check
+            var existing = await _bookmarkRepository
+                .GetByNormalizedUrlAsync(
+                    normalizedUrl,
+                    cancellationToken);
 
             if (existing != null && existing.Id != id)
             {
@@ -207,7 +210,7 @@ namespace BookmarkManager.Services
                     "A bookmark with this URL already exists.");
             }
 
-            // Validate requested tags
+            // 5. Validate Tag IDs
             var tagIds = request.TagIds?
                 .Where(tagId => tagId > 0)
                 .Distinct()
@@ -230,10 +233,11 @@ namespace BookmarkManager.Services
 
                 return ServiceResult<BookmarkResponseDto>.ValidationFailure(
                     "TagIds",
-                    $"The following tag IDs are invalid or deleted: {string.Join(", ", invalidTagIds)}");
+                    $"The following tag IDs are invalid or deleted: " +
+                    $"{string.Join(", ", invalidTagIds)}");
             }
 
-            // Title
+            // 6. Get title
             var title = request.Title?.Trim();
 
             if (string.IsNullOrWhiteSpace(title))
@@ -243,31 +247,71 @@ namespace BookmarkManager.Services
                     cancellationToken);
             }
 
+            // 7. Update bookmark properties
             bookmark.Url = uri.AbsoluteUri;
             bookmark.NormalizedUrl = normalizedUrl;
             bookmark.Title = title;
             bookmark.UpdatedAt = DateTime.UtcNow;
 
-            // Replace tags
-            bookmark.BookmarkTags.Clear();
+            // 8. Update tags
+            var requestedTagIds = tagIds.ToHashSet();
 
-            foreach (var tag in tags)
+            var existingLinks = bookmark.BookmarkTags
+                .ToList();
+
+            // Soft-delete removed tags
+            foreach (var link in existingLinks)
             {
-                bookmark.BookmarkTags.Add(new BookmarkTag
+                if (!requestedTagIds.Contains(link.TagId))
                 {
-                    BookmarkId = bookmark.Id,
-                    TagId = tag.Id,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                });
+                    link.IsDeleted = true;
+                    link.UpdatedAt = DateTime.UtcNow;
+                }
             }
 
+            // Add or restore selected tags
+            foreach (var tagId in requestedTagIds)
+            {
+                var existingLink = existingLinks
+                    .FirstOrDefault(x => x.TagId == tagId);
+
+                if (existingLink != null)
+                {
+                    // Restore previously deleted relationship
+                    existingLink.IsDeleted = false;
+                    existingLink.UpdatedAt = DateTime.UtcNow;
+                }
+                else
+                {
+                    bookmark.BookmarkTags.Add(new BookmarkTag
+                    {
+                        BookmarkId = bookmark.Id,
+                        TagId = tagId,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow,
+                        IsDeleted = false
+                    });
+                }
+            }
+
+            // 9. Save tracked changes
             await _bookmarkRepository.UpdateAsync(
                 bookmark,
                 cancellationToken);
 
+            // 10. Reload to get complete Tag navigation objects
+            var updatedBookmark = await _bookmarkRepository.GetByIdAsync(
+                id,
+                cancellationToken);
+
+            if (updatedBookmark == null)
+            {
+                return ServiceResult<BookmarkResponseDto>.NotFound(
+                    "Bookmark could not be retrieved after update.");
+            }
+
             return ServiceResult<BookmarkResponseDto>.Success(
-                bookmark.ToDto(),
+                updatedBookmark.ToDto(),
                 "Bookmark updated successfully.");
         }
 

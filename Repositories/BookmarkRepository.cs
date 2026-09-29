@@ -66,7 +66,6 @@ public class BookmarkRepository(AppDbContext dbContext)
     CancellationToken cancellationToken = default)
     {
         return await _context.Bookmarks
-            .AsNoTracking()
             .Include(b => b.BookmarkTags
                 .Where(bt => !bt.IsDeleted && !bt.Tag.IsDeleted))
             .ThenInclude(bt => bt.Tag)
