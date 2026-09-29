@@ -9,16 +9,10 @@ public class TagService(ITagRepository tagRepository) : ITagService
 {
     private readonly ITagRepository _tagRepository = tagRepository;
 
-    /// <summary>
-    ///  Get all tags
-    /// </summary>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    public async Task<ServiceResult<IEnumerable<TagResponseDto>>> GetTagsAsync(
-        CancellationToken cancellationToken)
+    public async Task<ServiceResult<IReadOnlyList<TagResponseDto>>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var tags = await _tagRepository.GetTagsAsync(cancellationToken);
+        var tags = await _tagRepository.GetAllAsync(cancellationToken);
         var dto = tags.ToDto();
-        return ServiceResult<IEnumerable<TagResponseDto>>.Success(dto);
+        return ServiceResult<IReadOnlyList<TagResponseDto>>.Success(dto);
     }
 }

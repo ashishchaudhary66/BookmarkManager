@@ -4,10 +4,10 @@ namespace BookmarkManager.Interfaces;
 
 public interface ITagRepository
 {
-    /// <summary>
-    /// Get all tags
-    /// </summary>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    Task<IEnumerable<Tag>> GetTagsAsync(CancellationToken cancellationToken);
+    Task<IReadOnlyList<Tag>> GetActiveByIdsAsync(
+        IEnumerable<int> ids,
+        CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<Tag>> GetAllAsync(
+        CancellationToken cancellationToken = default);
 }

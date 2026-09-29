@@ -8,7 +8,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookmarkManager.Repositories;
 
-public class BookmarkRepository(AppDbContext dbContext) : IBookmarkRepository
+public class BookmarkRepository(AppDbContext dbContext)
+    : IBookmarkRepository
 {
     private readonly AppDbContext _context = dbContext;
 
@@ -16,9 +17,13 @@ public class BookmarkRepository(AppDbContext dbContext) : IBookmarkRepository
         BookmarkQuery query,
         CancellationToken cancellationToken = default)
     {
+        query.Normalize();
+
         IQueryable<Bookmark> bookmarks = _context.Bookmarks
             .AsNoTracking()
-            .Include(b => b.BookmarkTags)
+            .Where(b => !b.IsDeleted)
+            .Include(b => b.BookmarkTags
+                .Where(bt => !bt.IsDeleted && !bt.Tag.IsDeleted))
             .ThenInclude(bt => bt.Tag);
 
         // Search by title or URL
@@ -33,7 +38,7 @@ public class BookmarkRepository(AppDbContext dbContext) : IBookmarkRepository
                 EF.Functions.Like(b.Url, pattern));
         }
 
-        // Filter by tag - case-insensitive partial match
+        // Filter by tag
         if (!string.IsNullOrWhiteSpace(query.Tag))
         {
             var tag = query.Tag.Trim();
@@ -41,8 +46,11 @@ public class BookmarkRepository(AppDbContext dbContext) : IBookmarkRepository
 
             bookmarks = bookmarks.Where(b =>
                 b.BookmarkTags.Any(bt =>
+                    !bt.IsDeleted &&
+                    !bt.Tag.IsDeleted &&
                     EF.Functions.Like(bt.Tag.Name, pattern)));
         }
+
         // Newest first
         bookmarks = bookmarks
             .OrderByDescending(b => b.CreatedAt);
@@ -51,5 +59,60 @@ public class BookmarkRepository(AppDbContext dbContext) : IBookmarkRepository
             query.Page,
             query.PageSize,
             cancellationToken);
+    }
+
+    public async Task<Bookmark?> GetByIdAsync(
+    int id,
+    CancellationToken cancellationToken = default)
+    {
+        return await _context.Bookmarks
+            .AsNoTracking()
+            .Include(b => b.BookmarkTags
+                .Where(bt => !bt.IsDeleted && !bt.Tag.IsDeleted))
+            .ThenInclude(bt => bt.Tag)
+            .FirstOrDefaultAsync(
+                b => b.Id == id && !b.IsDeleted,
+                cancellationToken);
+    }
+
+    public async Task<Bookmark?> GetByNormalizedUrlAsync(
+        string normalizedUrl,
+        CancellationToken cancellationToken = default)
+    {
+        return await _context.Bookmarks
+            .FirstOrDefaultAsync(
+                b => b.NormalizedUrl == normalizedUrl &&
+                     !b.IsDeleted,
+                cancellationToken);
+    }
+
+    public async Task AddAsync(
+        Bookmark bookmark,
+        CancellationToken cancellationToken = default)
+    {
+        await _context.Bookmarks.AddAsync(
+            bookmark,
+            cancellationToken);
+
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateAsync(
+        Bookmark bookmark,
+        CancellationToken cancellationToken = default)
+    {
+        _context.Bookmarks.Update(bookmark);
+
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task DeleteAsync(
+        Bookmark bookmark,
+        CancellationToken cancellationToken = default)
+    {
+        bookmark.IsDeleted = true;
+        bookmark.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync(cancellationToken);
     }
 }

@@ -10,6 +10,16 @@ builder.Services.AddApplicationServices();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Configure HttpClient for PageTitleService
+builder.Services.AddHttpClient(
+    "PageTitle",
+    client =>
+    {
+        client.Timeout = TimeSpan.FromSeconds(5);
+        client.DefaultRequestHeaders.UserAgent.ParseAdd(
+            "BookmarkManager/1.0");
+    });
+
 // Built-in OpenAPI
 builder.Services.AddOpenApi();
 

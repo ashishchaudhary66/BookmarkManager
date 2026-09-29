@@ -13,6 +13,7 @@ public static class ServiceRegistration
         services.AddScoped<ITagRepository, TagRepository>();
         services.AddScoped<IBookmarkService, BookmarkService>();
         services.AddScoped<IBookmarkRepository, BookmarkRepository>();
+        services.AddScoped<IPageTitleService, PageTitleService>();
 
         return services;
     }

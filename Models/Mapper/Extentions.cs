@@ -15,10 +15,10 @@ public static class Extensions
         };
     }
 
-    public static IEnumerable<TagResponseDto> ToDto(
+    public static IReadOnlyList<TagResponseDto> ToDto(
         this IEnumerable<Tag> tags)
     {
-        return tags.Select(tag => tag.ToDto());
+        return tags.Select(tag => tag.ToDto()).ToList();
     }
 
     public static BookmarkResponseDto ToDto(this Bookmark bookmark)

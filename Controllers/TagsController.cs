@@ -1,20 +1,25 @@
 ﻿using BookmarkManager.Interfaces;
+using BookmarkManager.Models.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookmarkManager.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
-public class TagsController(ITagService tagService) : BaseApiController
+[Route("api/[controller]")]
+public class TagController(
+    ITagService tagService) : BaseApiController
 {
-    // inject service here for tag management (e.g., ITagService)
     private readonly ITagService _tagService = tagService;
 
-    // GET: api/Tags
+    // GET: /api/Tag
+
     [HttpGet]
-    public async Task<IActionResult> GetTags(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetTags(
+        CancellationToken cancellationToken)
     {
-        var tags = await _tagService.GetTagsAsync(cancellationToken);
-        return ParseResult(tags);
+        var result = await _tagService.GetAllAsync(
+            cancellationToken);
+
+        return ParseResult(result);
     }
 }

@@ -9,5 +9,25 @@ namespace BookmarkManager.Interfaces
         Task<PagedResult<Bookmark>> GetPagedAsync(
             BookmarkQuery query,
             CancellationToken cancellationToken = default);
+
+        Task<Bookmark?> GetByIdAsync(
+            int id,
+            CancellationToken cancellationToken = default);
+
+        Task<Bookmark?> GetByNormalizedUrlAsync(
+            string normalizedUrl,
+            CancellationToken cancellationToken = default);
+
+        Task AddAsync(
+            Bookmark bookmark,
+            CancellationToken cancellationToken = default);
+
+        Task UpdateAsync(
+            Bookmark bookmark,
+            CancellationToken cancellationToken = default);
+
+        Task DeleteAsync(
+            Bookmark bookmark,
+            CancellationToken cancellationToken = default);
     }
 }
