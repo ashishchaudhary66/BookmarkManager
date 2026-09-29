@@ -22,8 +22,7 @@ public class BookmarkRepository(AppDbContext dbContext)
         IQueryable<Bookmark> bookmarks = _context.Bookmarks
             .AsNoTracking()
             .Where(b => !b.IsDeleted)
-            .Include(b => b.BookmarkTags
-                .Where(bt => !bt.IsDeleted && !bt.Tag.IsDeleted))
+            .Include(b => b.BookmarkTags)
             .ThenInclude(bt => bt.Tag);
 
         // Search by title or URL
@@ -67,11 +66,10 @@ public class BookmarkRepository(AppDbContext dbContext)
     {
         return await _context.Bookmarks
             .AsNoTracking()
-            .Include(b => b.BookmarkTags
-                .Where(bt => !bt.IsDeleted && !bt.Tag.IsDeleted))
+            .Include(b => b.BookmarkTags)
             .ThenInclude(bt => bt.Tag)
             .FirstOrDefaultAsync(
-                b => b.Id == id && !b.IsDeleted,
+                b => b.Id == id,
                 cancellationToken);
     }
 
@@ -80,11 +78,10 @@ public class BookmarkRepository(AppDbContext dbContext)
     CancellationToken cancellationToken = default)
     {
         return await _context.Bookmarks
-            .Include(b => b.BookmarkTags
-                .Where(bt => !bt.IsDeleted && !bt.Tag.IsDeleted))
+            .Include(b => b.BookmarkTags)
             .ThenInclude(bt => bt.Tag)
             .FirstOrDefaultAsync(
-                b => b.Id == id && !b.IsDeleted,
+                b => b.Id == id,
                 cancellationToken);
     }
 
@@ -94,8 +91,7 @@ public class BookmarkRepository(AppDbContext dbContext)
     {
         return await _context.Bookmarks
             .FirstOrDefaultAsync(
-                b => b.NormalizedUrl == normalizedUrl &&
-                     !b.IsDeleted,
+                b => b.NormalizedUrl == normalizedUrl,
                 cancellationToken);
     }
 
