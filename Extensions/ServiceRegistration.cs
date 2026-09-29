@@ -11,7 +11,8 @@ public static class ServiceRegistration
         // Register application services here
         services.AddScoped<ITagService, TagService>();
         services.AddScoped<ITagRepository, TagRepository>();
-
+        services.AddScoped<IBookmarkService, BookmarkService>();
+        services.AddScoped<IBookmarkRepository, BookmarkRepository>();
 
         return services;
     }

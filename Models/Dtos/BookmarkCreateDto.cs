@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace BookmarkManager.Models.Dtos;
 
 public record BookmarkCreateDto

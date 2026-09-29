@@ -18,7 +18,7 @@ public class TagService(ITagRepository tagRepository) : ITagService
         CancellationToken cancellationToken)
     {
         var tags = await _tagRepository.GetTagsAsync(cancellationToken);
-        var dto = tags.EntityToDtoMap();
+        var dto = tags.ToDto();
         return ServiceResult<IEnumerable<TagResponseDto>>.Success(dto);
     }
 }
