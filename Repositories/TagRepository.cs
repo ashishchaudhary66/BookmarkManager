@@ -43,4 +43,29 @@ public class TagRepository(AppDbContext context) : ITagRepository
                 tagIds.Contains(t.Id))
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<Tag?> GetByNameAsync(
+        string name,
+        CancellationToken cancellationToken = default)
+    {
+        var normalizedName = name.Trim().ToLower();
+
+        return await _context.Tags
+            .AsNoTracking()
+            .FirstOrDefaultAsync(
+                t => t.Name.ToLower() == normalizedName,
+                cancellationToken);
+    }
+
+    public async Task AddAsync(
+        Tag tag,
+        CancellationToken cancellationToken = default)
+    {
+        await _context.Tags.AddAsync(
+            tag,
+            cancellationToken);
+
+        await _context.SaveChangesAsync(
+            cancellationToken);
+    }
 }

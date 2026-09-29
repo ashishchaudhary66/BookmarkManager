@@ -22,4 +22,16 @@ public class TagController(
 
         return ParseResult(result);
     }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateTag(
+        [FromBody] TagCreateDto request,
+        CancellationToken cancellationToken)
+    {
+        var result = await _tagService.CreateAsync(
+            request,
+            cancellationToken);
+
+        return ParseResult(result);
+    }
 }

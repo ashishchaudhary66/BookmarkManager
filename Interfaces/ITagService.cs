@@ -7,4 +7,8 @@ public interface ITagService
 {
     Task<ServiceResult<IReadOnlyList<TagResponseDto>>> GetAllAsync(
         CancellationToken cancellationToken = default);
+
+    Task<ServiceResult<TagResponseDto>> CreateAsync(
+        TagCreateDto request,
+        CancellationToken cancellationToken = default);
 }
